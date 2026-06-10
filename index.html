@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Santiago — Mechanical Engineering Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#060B14;
+    --panel:#0B1320;
+    --panel2:#0E1828;
+    --line:rgba(79,216,235,.16);
+    --line-strong:rgba(79,216,235,.38);
+    --cyan:#4FD8EB;
+    --cyan-dim:#2A8FA0;
+    --orange:#FF6B35;
+    --text:#DCE7F0;
+    --muted:#6E8298;
+    --glow:rgba(79,216,235,.10);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Space Grotesk',sans-serif;
+    background:var(--void);
+    color:var(--text);
+    line-height:1.65;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--cyan);color:var(--void)}
+  .mono{font-family:'JetBrains Mono',monospace}
+
+  /* ambient background grid + vignette */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:-2;
+    background-image:
+      linear-gradient(rgba(79,216,235,.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,216,235,.045) 1px, transparent 1px);
+    background-size:48px 48px;
+  }
+  body::after{
+    content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:radial-gradient(ellipse 80% 60% at 50% -10%, rgba(79,216,235,.08), transparent 60%),
+               radial-gradient(ellipse 60% 50% at 100% 100%, rgba(255,107,53,.05), transparent 60%);
+  }
+
+  /* ===== BOOT OVERLAY ===== */
+  #boot{
+    position:fixed;inset:0;background:var(--void);z-index:200;
+    display:flex;align-items:center;justify-content:center;
+    transition:opacity .5s ease;
+  }
+  #boot.off{opacity:0;pointer-events:none}
+  .boot-box{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--cyan);width:min(420px,86vw)}
+  .boot-line{opacity:0;margin-bottom:6px;letter-spacing:.04em}
+  .boot-line.on{opacity:1}
+  .boot-line .ok{color:var(--orange)}
+  .boot-bar{height:2px;background:rgba(79,216,235,.15);margin-top:14px;overflow:hidden}
+  .boot-bar i{display:block;height:100%;width:0;background:var(--cyan);transition:width 1.2s cubic-bezier(.7,0,.3,1)}
+  .boot-bar.go i{width:100%}
+
+  /* ===== TOP TELEMETRY BAR ===== */
+  .telemetry{
+    position:sticky;top:0;z-index:100;
+    display:flex;gap:0;flex-wrap:wrap;
+    background:rgba(6,11,20,.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);
+  }
+  .tm-cell{
+    padding:10px 18px;border-right:1px solid var(--line);
+    font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;
+  }
+  .tm-cell .k{color:var(--muted);text-transform:uppercase;font-size:9px;display:block;letter-spacing:.18em}
+  .tm-cell .v{color:var(--text)}
+  .tm-cell .v.hot{color:var(--orange)}
+  .tm-cell .v.live{color:var(--cyan)}
+  .tm-cell.dot::before{content:"●";color:var(--cyan);margin-right:7px;animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+  @media(max-width:680px){.tm-cell{padding:8px 12px}.tm-cell:nth-child(n+4){display:none}}
+
+  .wrap{max-width:1120px;margin:0 auto;padding:0 28px}
+  @media(max-width:680px){.wrap{padding:0 18px}}
+
+  /* ===== HERO ===== */
+  .hero{
+    position:relative;min-height:88vh;display:grid;
+    grid-template-columns:1.2fr .8fr;align-items:center;gap:30px;
+    padding-top:60px;padding-bottom:40px;
+  }
+  @media(max-width:860px){.hero{grid-template-columns:1fr;min-height:auto;padding-top:70px}}
+  .eyebrow{
+    font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.26em;
+    text-transform:uppercase;color:var(--cyan);margin-bottom:22px;
+  }
+  .eyebrow::before{content:"// "}
+  h1{
+    font-family:'Chakra Petch',sans-serif;font-weight:700;
+    font-size:clamp(46px,7.5vw,92px);line-height:1.0;letter-spacing:.01em;
+    text-transform:uppercase;
+    background:linear-gradient(135deg,#FFFFFF 30%, var(--cyan) 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 24px rgba(79,216,235,.25));
+  }
+  h1 .sub{display:block;font-size:.36em;font-weight:500;color:var(--muted);
+    -webkit-text-fill-color:var(--muted);letter-spacing:.3em;margin-top:14px}
+  .lede{font-size:17px;color:#9FB2C4;max-width:520px;margin-top:24px}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+  .chip{
+    font-family:'JetBrains Mono',monospace;font-size:11px;padding:8px 15px;
+    border:1px solid var(--line-strong);color:var(--cyan);letter-spacing:.06em;
+    background:rgba(79,216,235,.05);clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);
+  }
+  .chip.hot{border-color:var(--orange);color:var(--orange);background:rgba(255,107,53,.07)}
+  .hero-canvas{position:relative;height:420px}
+  @media(max-width:860px){.hero-canvas{height:280px}}
+  #wire{width:100%;height:100%;display:block}
+  .canvas-tag{
+    position:absolute;bottom:8px;left:50%;transform:translateX(-50%);
+    font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--muted);
+    letter-spacing:.22em;text-transform:uppercase;white-space:nowrap;
+  }
+
+  /* ===== SECTIONS ===== */
+  section{padding:84px 0}
+  .sec-head{display:flex;align-items:baseline;gap:18px;margin-bottom:44px;border-bottom:1px solid var(--line);padding-bottom:16px}
+  .sec-id{
+    font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--orange);
+    letter-spacing:.16em;border:1px solid rgba(255,107,53,.35);padding:3px 10px;
+  }
+  .sec-head h2{
+    font-family:'Chakra Petch',sans-serif;font-size:clamp(24px,3.2vw,34px);
+    text-transform:uppercase;letter-spacing:.04em;font-weight:600;
+  }
+  .sec-head .count{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);letter-spacing:.12em}
+
+  /* scroll reveal */
+  .rv{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+  .rv.in{opacity:1;transform:none}
+
+  /* ===== ABOUT ===== */
+  .about-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:44px}
+  @media(max-width:800px){.about-grid{grid-template-columns:1fr}}
+  .about-grid p{margin-bottom:16px;color:#9FB2C4;font-size:15.5px}
+  .spec{
+    border:1px solid var(--line);background:linear-gradient(180deg,var(--panel),var(--panel2));
+    position:relative;
+  }
+  .spec::before{content:"";position:absolute;top:-1px;left:-1px;width:14px;height:14px;border-top:2px solid var(--cyan);border-left:2px solid var(--cyan)}
+  .spec::after{content:"";position:absolute;bottom:-1px;right:-1px;width:14px;height:14px;border-bottom:2px solid var(--cyan);border-right:2px solid var(--cyan)}
+  .spec-row{display:flex;justify-content:space-between;gap:14px;padding:13px 18px;border-bottom:1px solid var(--line);font-size:13.5px}
+  .spec-row:last-child{border-bottom:none}
+  .spec-row .k{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.14em;padding-top:3px}
+  .spec-row .v{text-align:right;color:var(--text)}
+
+  /* ===== PROJECT CARDS ===== */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+  .card{
+    position:relative;overflow:hidden;
+    background:linear-gradient(180deg,var(--panel),var(--panel2));
+    border:1px solid var(--line);padding:24px;
+    display:flex;flex-direction:column;gap:11px;
+    transition:border-color .25s ease, transform .25s ease, box-shadow .25s ease;
+  }
+  .card:hover{
+    border-color:var(--line-strong);transform:translateY(-4px);
+    box-shadow:0 12px 40px -12px rgba(79,216,235,.25), 0 0 0 1px rgba(79,216,235,.1);
+  }
+  /* scan line on hover */
+  .card::after{
+    content:"";position:absolute;left:0;right:0;top:-40%;height:30%;
+    background:linear-gradient(180deg,transparent,rgba(79,216,235,.07),transparent);
+    transform:translateY(-120%);transition:transform .7s ease;pointer-events:none;
+  }
+  .card:hover::after{transform:translateY(560%)}
+  .card .pid{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.16em}
+  .card h3{font-family:'Chakra Petch',sans-serif;font-size:18.5px;font-weight:600;line-height:1.3;color:#fff}
+  .card p{font-size:14px;color:#8FA3B5;flex:1}
+  .badge{
+    font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.14em;
+    text-transform:uppercase;padding:4px 11px;border:1px solid currentColor;width:max-content;
+  }
+  .badge.done{color:#3DDC97}
+  .badge.wip{color:var(--orange)}
+  .badge.plan{color:var(--muted)}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+  .tags span{
+    font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--cyan-dim);
+    border:1px solid var(--line);padding:3px 9px;background:rgba(79,216,235,.04);
+  }
+  .card.slot{
+    border-style:dashed;border-color:rgba(110,130,152,.4);background:transparent;
+    align-items:center;justify-content:center;text-align:center;min-height:210px;
+  }
+  .card.slot:hover{transform:none;box-shadow:none;border-color:var(--line-strong)}
+  .card.slot::after{display:none}
+  .card.slot .plus{font-family:'Chakra Petch',sans-serif;font-size:36px;color:var(--muted)}
+  .card.slot p{flex:0;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em}
+
+  /* ===== TIMELINE ===== */
+  .tl{border-left:1px solid var(--line-strong);margin-left:8px}
+  .tl-item{position:relative;padding:0 0 38px 32px}
+  .tl-item:last-child{padding-bottom:4px}
+  .tl-item::before{
+    content:"";position:absolute;left:-6px;top:7px;width:11px;height:11px;
+    background:var(--void);border:2px solid var(--cyan);transform:rotate(45deg);
+  }
+  .tl-item.current::before{background:var(--orange);border-color:var(--orange);box-shadow:0 0 12px rgba(255,107,53,.6)}
+  .tl-date{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--cyan);letter-spacing:.14em}
+  .tl-item h3{font-family:'Chakra Petch',sans-serif;font-size:17.5px;font-weight:600;margin:5px 0 2px;color:#fff}
+  .tl-item .org{font-size:13px;color:var(--muted);margin-bottom:7px;font-family:'JetBrains Mono',monospace;letter-spacing:.04em}
+  .tl-item p{font-size:14px;color:#8FA3B5;max-width:660px}
+
+  /* ===== SKILLS ===== */
+  .skill-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:30px}
+  .skill-group h3{
+    font-family:'JetBrains Mono',monospace;font-size:10.5px;text-transform:uppercase;
+    letter-spacing:.2em;color:var(--orange);margin-bottom:18px;
+    border-bottom:1px solid var(--line);padding-bottom:10px;
+  }
+  .skill{margin-bottom:15px}
+  .skill .row{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px}
+  .skill .lvl{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+  .bar{height:4px;background:rgba(79,216,235,.08);position:relative;overflow:hidden}
+  .bar i{
+    position:absolute;inset:0;transform-origin:left;transform:scaleX(0);
+    background:linear-gradient(90deg,var(--cyan-dim),var(--cyan));
+    box-shadow:0 0 10px rgba(79,216,235,.5);
+    transition:transform 1s cubic-bezier(.6,0,.2,1) .15s;
+  }
+  .bar.wip i{background:linear-gradient(90deg,#B34A24,var(--orange));box-shadow:0 0 10px rgba(255,107,53,.5)}
+  .in .bar i{transform:scaleX(var(--p))}
+
+  /* ===== REVISIONS ===== */
+  .rev{border:1px solid var(--line);background:var(--panel);font-size:13px}
+  .rev-row{display:grid;grid-template-columns:70px 130px 1fr;border-bottom:1px solid var(--line)}
+  .rev-row:last-child{border-bottom:none}
+  .rev-row.head{font-family:'JetBrains Mono',monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.16em;color:var(--muted);background:var(--panel2)}
+  .rev-row > div{padding:10px 15px;border-right:1px solid var(--line)}
+  .rev-row > div:last-child{border-right:none}
+  .rev-row .r{font-family:'JetBrains Mono',monospace;color:var(--orange)}
+  .rev-row > div:nth-child(2){font-family:'JetBrains Mono',monospace;color:var(--muted)}
+  @media(max-width:560px){.rev-row{grid-template-columns:52px 96px 1fr}.rev-row>div{padding:9px 10px;font-size:12px}}
+
+  /* ===== FOOTER / CONTACT ===== */
+  footer{
+    border-top:1px solid var(--line-strong);padding:80px 0 60px;position:relative;
+    background:radial-gradient(ellipse 70% 90% at 50% 110%, rgba(79,216,235,.07), transparent 65%);
+  }
+  footer h2{
+    font-family:'Chakra Petch',sans-serif;text-transform:uppercase;
+    font-size:clamp(30px,5vw,52px);margin-bottom:10px;
+    background:linear-gradient(135deg,#fff,var(--cyan));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  footer .sub{color:#8FA3B5;max-width:520px;margin-bottom:32px;font-size:15.5px}
+  .links{display:flex;flex-wrap:wrap;gap:12px}
+  .links a{
+    font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.08em;
+    color:var(--cyan);text-decoration:none;border:1px solid var(--line-strong);
+    padding:12px 22px;background:rgba(79,216,235,.04);
+    clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);
+    transition:background .2s, color .2s, box-shadow .2s;
+  }
+  .links a:hover,.links a:focus-visible{
+    background:var(--cyan);color:var(--void);
+    box-shadow:0 0 24px rgba(79,216,235,.4);
+  }
+  a:focus-visible,.card:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
+  .foot-meta{
+    margin-top:54px;border-top:1px solid var(--line);padding-top:18px;
+    display:flex;flex-wrap:wrap;gap:26px;
+    font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--muted);
+    letter-spacing:.18em;text-transform:uppercase;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    *,*::before,*::after{animation:none!important;transition:none!important}
+    .rv{opacity:1;transform:none}
+    .bar i{transform:scaleX(var(--p))!important}
+    #boot{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== BOOT SEQUENCE ===== -->
+<div id="boot" aria-hidden="true">
+  <div class="boot-box">
+    <div class="boot-line">> INITIALIZING PORTFOLIO SYSTEM <span class="ok">[OK]</span></div>
+    <div class="boot-line">> LOADING PROJECT TELEMETRY <span class="ok">[OK]</span></div>
+    <div class="boot-line">> CALIBRATING AMBITION SCALE 1:1 <span class="ok">[OK]</span></div>
+    <div class="boot-line">> SYSTEM ONLINE_</div>
+    <div class="boot-bar"><i></i></div>
+  </div>
+</div>
+
+<!-- ===== TELEMETRY BAR ===== -->
+<div class="telemetry">
+  <div class="tm-cell dot"><span class="k">System</span><span class="v live" id="tb-name"></span></div>
+  <div class="tm-cell"><span class="k">Rev</span><span class="v hot" id="tb-rev"></span></div>
+  <div class="tm-cell"><span class="k">Status</span><span class="v" id="tb-status"></span></div>
+  <div class="tm-cell"><span class="k">Local Time</span><span class="v" id="tb-time">--:--:--</span></div>
+  <div class="tm-cell"><span class="k">Coordinates</span><span class="v">42.63°N 71.32°W</span></div>
+</div>
+
+<div class="wrap">
+
+  <!-- ===== HERO ===== -->
+  <header class="hero">
+    <div>
+      <div class="eyebrow" id="hero-eyebrow"></div>
+      <h1 id="hero-name"></h1>
+      <p class="lede" id="hero-lede"></p>
+      <div class="chips" id="hero-chips"></div>
+    </div>
+    <div class="hero-canvas">
+      <canvas id="wire"></canvas>
+      <span class="canvas-tag" id="hero-dim"></span>
+    </div>
+  </header>
+
+  <!-- ===== ABOUT ===== -->
+  <section id="about" class="rv">
+    <div class="sec-head"><span class="sec-id">SYS.01</span><h2>Profile</h2></div>
+    <div class="about-grid">
+      <div id="about-text"></div>
+      <div class="spec" id="spec-table"></div>
+    </div>
+  </section>
+
+  <!-- ===== PROJECTS ===== -->
+  <section id="projects" class="rv">
+    <div class="sec-head"><span class="sec-id">SYS.02</span><h2>Projects</h2><span class="count" id="proj-count"></span></div>
+    <div class="grid" id="proj-grid"></div>
+  </section>
+
+  <!-- ===== EXPERIENCE ===== -->
+  <section id="experience" class="rv">
+    <div class="sec-head"><span class="sec-id">SYS.03</span><h2>Experience &amp; Work</h2></div>
+    <div class="tl" id="exp-tl"></div>
+  </section>
+
+  <!-- ===== EDUCATION ===== -->
+  <section id="education" class="rv">
+    <div class="sec-head"><span class="sec-id">SYS.04</span><h2>Education &amp; Certifications</h2></div>
+    <div class="tl" id="edu-tl"></div>
+  </section>
+
+  <!-- ===== SKILLS ===== -->
+  <section id="skills" class="rv">
+    <div class="sec-head"><span class="sec-id">SYS.05</span><h2>Skills</h2></div>
+    <div class="skill-cols" id="skill-cols"></div>
+  </section>
+
+  <!-- ===== REVISIONS ===== -->
+  <section id="revisions" class="rv">
+    <div class="sec-head"><span class="sec-id">SYS.06</span><h2>Revision History</h2></div>
+    <div class="rev" id="rev-table"></div>
+  </section>
+</div>
+
+<!-- ===== CONTACT ===== -->
+<footer id="contact">
+  <div class="wrap">
+    <h2 id="contact-head"></h2>
+    <p class="sub" id="contact-sub"></p>
+    <div class="links" id="contact-links"></div>
+    <div class="foot-meta">
+      <span id="foot-loc"></span>
+      <span>SHEET 1 OF 1</span>
+      <span id="foot-year"></span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   ✏️  EDIT EVERYTHING BELOW — this object is the whole site.
+   Add a project? Add an item to DATA.projects.
+   New internship? Add it to DATA.experience.
+   Updated something? Add a row to DATA.revisions and bump rev.
+   Nothing outside this object needs touching.
+   ============================================================ */
+const DATA = {
+  name: "Santiago",
+  rev: "A.2",
+  status: "PRE-ENROLLED → FALL 2026",
+  eyebrow: "Mechanical Engineering · UMass Lowell · Class of 2030",
+  heroDim: "LIMA, PE → LOWELL, MA ≈ 5,900 KM",
+  lede: "I build, automate, and analyze. Heading into mechanical engineering with sights on robotics and aerospace — currently turning a background in automation and IB-level math & physics into hardware skills.",
+  chips: ["🤖 Robotics", "🚀 Aerospace", "🛠️ CAD (in training)", "🐍 Python (learning)", "🇪🇸/🇬🇧 Bilingual"],
+
+  about: [
+    "I'm an incoming Mechanical Engineering freshman at the University of Massachusetts Lowell, graduating from the IB Diploma Programme with Higher Level coursework in Mathematics (Analysis & Approaches), Physics, and Economics.",
+    "Before writing a single line of G-code, I taught myself to automate: multi-macro Excel/VBA dashboard systems, Power BI retail analytics, and data-driven business analysis. That same instinct — make the machine do the boring part — is what pulls me toward robotics and automation engineering.",
+    "Long-term: graduate study in mechanical or aerospace engineering, and hardware that ends up somewhere interesting — a warehouse, a launchpad, or both."
+  ],
+  specs: [
+    ["Base", "Lowell, MA (from Lima, PE)"],
+    ["Degree", "B.S. Mechanical Engineering"],
+    ["Expected", "2030"],
+    ["Focus", "Robotics · Automation · Aero"],
+    ["Languages", "Spanish (native) · English (fluent)"],
+    ["Seeking", "Summer 2027/28 internships"]
+  ],
+
+  projects: [
+    {
+      id: "PRJ-001",
+      title: "Multi-Macro Excel Dashboard Automation",
+      status: "done", // done | wip | plan
+      desc: "Designed a chained VBA workflow (UpdateDashboard → UpdateSummaryTab → FormatDashboard) pulling live data from a validation workbook — turning a manual reporting process into a one-click pipeline.",
+      tags: ["VBA", "Excel", "Automation"]
+    },
+    {
+      id: "PRJ-002",
+      title: "Retail Sellout Analytics — Power BI",
+      status: "done",
+      desc: "Built trade-marketing sellout analysis across three major Peruvian retail chains, tracking SKU-level performance to support distribution and activation decisions.",
+      tags: ["Power BI", "Data Analysis", "Retail"]
+    },
+    {
+      id: "PRJ-003",
+      title: "Continuous Influence Functions in Chess",
+      status: "done",
+      desc: "IB Math AA HL Internal Assessment modeling piece influence across the board using Gaussian decay functions and calculus — math as a design tool.",
+      tags: ["Calculus", "Modeling", "IB HL"]
+    },
+    {
+      id: "PRJ-004",
+      title: "SolidWorks CSWA Certification",
+      status: "wip",
+      desc: "Self-teaching SolidWorks through summer 2026; targeting the Certified SolidWorks Associate exam by December 2026, then CSWP in spring.",
+      tags: ["SolidWorks", "CAD", "Certification"]
+    },
+    {
+      id: "PRJ-005",
+      title: "Passion Project — Mechatronic Build",
+      status: "plan",
+      desc: "Freshman-year design-build-test project combining CAD, 3D printing, and Python/Arduino control. Scope being defined — full documentation will live here.",
+      tags: ["CAD", "Arduino", "Python", "3D Printing"]
+    }
+  ],
+  showAddSlot: true, // dashed "next project" placeholder card
+
+  experience: [
+    {
+      current: true,
+      date: "2026 — PRESENT",
+      title: "Pre-Engineering Skill Building",
+      org: "Independent",
+      desc: "Structured summer curriculum: SolidWorks fundamentals, Python (NumPy/Pandas), and Calculus II preparation ahead of freshman year."
+    },
+    {
+      current: false,
+      date: "2025 — 2026",
+      title: "Digital Marketing & BI Projects",
+      org: "Lima, Peru",
+      desc: "Google Ads campaign proposal for a Peruvian ergonomic-workspace startup; quantitative influencer-marketing research (Likert-scale survey design, Lima fashion market)."
+    }
+    /* Add internships here as they happen:
+    { current:false, date:"SUMMER 2027", title:"Mechanical Engineering Intern", org:"Company", desc:"What you did." }
+    */
+  ],
+
+  education: [
+    {
+      current: true,
+      date: "2026 — 2030 (EXPECTED)",
+      title: "B.S. Mechanical Engineering",
+      org: "University of Massachusetts Lowell",
+      desc: "Francis College of Engineering. Planned: project team membership (rocketry / robotics) from semester one, co-op program."
+    },
+    {
+      current: false,
+      date: "2024 — 2026",
+      title: "IB Diploma Programme",
+      org: "Lima, Peru",
+      desc: "Higher Level: Mathematics AA, Physics, Economics. Standard Level: Chemistry, English A, Spanish A."
+    },
+    {
+      current: false,
+      date: "TARGET: DEC 2026",
+      title: "CSWA — Certified SolidWorks Associate",
+      org: "Dassault Systèmes",
+      desc: "In preparation. CSWP to follow in spring 2027."
+    }
+  ],
+
+  skills: [
+    {
+      group: "Engineering & CAD",
+      items: [
+        ["SolidWorks", "Learning", 30, true],
+        ["Engineering Drawing", "Learning", 25, true],
+        ["MATLAB", "Planned 2026", 10, true]
+      ]
+    },
+    {
+      group: "Programming & Data",
+      items: [
+        ["Excel / VBA", "Advanced", 88, false],
+        ["Power BI", "Intermediate", 65, false],
+        ["Python", "Learning", 35, true]
+      ]
+    },
+    {
+      group: "Foundations",
+      items: [
+        ["Calculus & ODEs", "IB HL", 80, false],
+        ["Physics (Mechanics)", "IB HL", 78, false],
+        ["Economics / Analysis", "IB HL", 75, false]
+      ]
+    }
+  ],
+
+  revisions: [
+    ["A.1", "2026-06-09", "Initial release — profile, project log, and roadmap targets published."],
+    ["A.2", "2026-06-09", "Full visual overhaul: mission-control HUD theme, boot sequence, live telemetry, wireframe display."]
+    /* Add a new row each time you update the site:
+    ["A.3", "2026-09-15", "Joined UML Rocketry; added career fair contacts."]
+    */
+  ],
+
+  contact: {
+    head: "Open to build.",
+    sub: "Recruiting for Summer 2027/28 mechanical engineering internships and co-ops in the Greater Boston area. Robotics, automation, aerospace — let's talk.",
+    links: [
+      ["EMAIL →", "mailto:sspesantes@gmail.com"],
+      ["LINKEDIN →", "https://linkedin.com/in/your-handle"],
+      ["GITHUB →", "https://github.com/santiagopf2008"],
+      ["RESUME (PDF) →", "#"]
+    ]
+  }
+};
+
+/* ============================================================
+   RENDERING — no need to edit below this line
+   ============================================================ */
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// telemetry + hero
+$("tb-name").textContent = DATA.name.toUpperCase() + ".PORTFOLIO";
+$("tb-rev").textContent = "REV " + DATA.rev;
+$("tb-status").textContent = DATA.status;
+$("hero-eyebrow").textContent = DATA.eyebrow;
+$("hero-name").innerHTML = esc(DATA.name) + '<span class="sub">MECHANICAL ENGINEERING</span>';
+$("hero-dim").textContent = DATA.heroDim;
+$("hero-lede").textContent = DATA.lede;
+$("hero-chips").innerHTML = DATA.chips.map((c,i) =>
+  `<span class="chip${i===0?' hot':''}">${esc(c)}</span>`).join("");
+
+// live clock
+const clock = () => {
+  const d = new Date();
+  $("tb-time").textContent = d.toTimeString().slice(0,8) + " ET";
+};
+clock(); setInterval(clock, 1000);
+
+// about
+$("about-text").innerHTML = DATA.about.map(p => `<p>${esc(p)}</p>`).join("");
+$("spec-table").innerHTML = DATA.specs.map(([k,v]) =>
+  `<div class="spec-row"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join("");
+
+// projects
+const badge = s => s==="done" ? '<span class="badge done">Completed</span>'
+              : s==="wip" ? '<span class="badge wip">In Progress</span>'
+              : '<span class="badge plan">Planned</span>';
+$("proj-count").textContent = String(DATA.projects.length).padStart(2,"0") + " LOGGED";
+$("proj-grid").innerHTML = DATA.projects.map(p => `
+  <article class="card" tabindex="0">
+    <span class="pid">${esc(p.id)}</span>
+    <h3>${esc(p.title)}</h3>
+    ${badge(p.status)}
+    <p>${esc(p.desc)}</p>
+    <div class="tags">${p.tags.map(t=>`<span>${esc(t)}</span>`).join("")}</div>
+  </article>`).join("")
+  + (DATA.showAddSlot ? `
+  <article class="card slot" aria-hidden="true">
+    <span class="plus">+</span>
+    <p>NEXT PROJECT<br>RESERVED</p>
+  </article>` : "");
+
+// timelines
+const tlHTML = arr => arr.map(e => `
+  <div class="tl-item${e.current?' current':''}">
+    <span class="tl-date">${esc(e.date)}</span>
+    <h3>${esc(e.title)}</h3>
+    <div class="org">${esc(e.org)}</div>
+    <p>${esc(e.desc)}</p>
+  </div>`).join("");
+$("exp-tl").innerHTML = tlHTML(DATA.experience);
+$("edu-tl").innerHTML = tlHTML(DATA.education);
+
+// skills (animated bars via --p custom property)
+$("skill-cols").innerHTML = DATA.skills.map(g => `
+  <div class="skill-group">
+    <h3>${esc(g.group)}</h3>
+    ${g.items.map(([name,lvl,pct,wip]) => `
+      <div class="skill">
+        <div class="row"><span>${esc(name)}</span><span class="lvl">${esc(lvl)}</span></div>
+        <div class="bar${wip?' wip':''}"><i style="--p:${pct/100}"></i></div>
+      </div>`).join("")}
+  </div>`).join("");
+
+// revisions (newest first)
+$("rev-table").innerHTML =
+  `<div class="rev-row head"><div>Rev</div><div>Date</div><div>Description</div></div>` +
+  [...DATA.revisions].reverse().map(([r,d,t]) =>
+    `<div class="rev-row"><div class="r">${esc(r)}</div><div>${esc(d)}</div><div>${esc(t)}</div></div>`).join("");
+
+// contact
+$("contact-head").textContent = DATA.contact.head;
+$("contact-sub").textContent = DATA.contact.sub;
+$("contact-links").innerHTML = DATA.contact.links.map(([label,href]) =>
+  `<a href="${esc(href)}">${esc(label)}</a>`).join("");
+$("foot-loc").textContent = "ORIGIN: LIMA, PE";
+$("foot-year").textContent = "© " + new Date().getFullYear() + " " + DATA.name.toUpperCase();
+
+/* ===== boot sequence ===== */
+const boot = $("boot");
+if (reduced) { boot.remove(); }
+else {
+  const lines = boot.querySelectorAll(".boot-line");
+  lines.forEach((l,i) => setTimeout(() => l.classList.add("on"), 120 + i*260));
+  setTimeout(() => boot.querySelector(".boot-bar").classList.add("go"), 200);
+  setTimeout(() => boot.classList.add("off"), 1500);
+  setTimeout(() => boot.remove(), 2100);
+}
+
+/* ===== scroll reveal ===== */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+}, { threshold: 0.12 });
+document.querySelectorAll(".rv").forEach(el => io.observe(el));
+
+/* ===== rotating wireframe icosahedron ===== */
+(() => {
+  const cv = $("wire"), ctx = cv.getContext("2d");
+  let W, H, t = 0;
+  const fit = () => { W = cv.width = cv.offsetWidth * 2; H = cv.height = cv.offsetHeight * 2; };
+  fit(); addEventListener("resize", fit);
+
+  // icosahedron vertices
+  const phi = (1 + Math.sqrt(5)) / 2;
+  let V = [
+    [-1,phi,0],[1,phi,0],[-1,-phi,0],[1,-phi,0],
+    [0,-1,phi],[0,1,phi],[0,-1,-phi],[0,1,-phi],
+    [phi,0,-1],[phi,0,1],[-phi,0,-1],[-phi,0,1]
+  ].map(v => { const m = Math.hypot(...v); return v.map(x => x/m); });
+  const E = [[0,1],[0,5],[0,7],[0,10],[0,11],[1,5],[1,7],[1,8],[1,9],[2,3],[2,4],[2,6],[2,10],[2,11],[3,4],[3,6],[3,8],[3,9],[4,5],[4,9],[4,11],[5,9],[5,11],[6,7],[6,8],[6,10],[7,8],[7,10],[8,9],[10,11]];
+
+  const draw = () => {
+    ctx.clearRect(0,0,W,H);
+    const cx = W/2, cy = H/2, R = Math.min(W,H) * 0.33;
+    const ca = Math.cos(t*.006), sa = Math.sin(t*.006);
+    const cb = Math.cos(t*.0042), sb = Math.sin(t*.0042);
+    const P = V.map(([x,y,z]) => {
+      let x1 = x*ca - z*sa, z1 = x*sa + z*ca;          // rotate Y
+      let y1 = y*cb - z1*sb, z2 = y*sb + z1*cb;        // rotate X
+      const s = 1 / (1.9 - z2 * 0.55);                 // perspective
+      return [cx + x1*R*s, cy + y1*R*s, z2];
+    });
+    // edges
+    E.forEach(([a,b]) => {
+      const depth = (P[a][2] + P[b][2]) / 2;
+      const alpha = 0.18 + (depth + 1) * 0.28;
+      ctx.strokeStyle = `rgba(79,216,235,${alpha.toFixed(2)})`;
+      ctx.lineWidth = 1.4 + (depth + 1) * 1.1;
+      ctx.beginPath(); ctx.moveTo(P[a][0], P[a][1]); ctx.lineTo(P[b][0], P[b][1]); ctx.stroke();
+    });
+    // vertices
+    P.forEach(([x,y,z]) => {
+      const r = 2.6 + (z + 1) * 2.2;
+      ctx.fillStyle = z > 0.3 ? "rgba(255,107,53,.95)" : "rgba(79,216,235,.8)";
+      ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI*2); ctx.fill();
+    });
+    t++;
+    if (!reduced) requestAnimationFrame(draw);
+  };
+  draw();
+})();
+</script>
+</body>
+</html>
