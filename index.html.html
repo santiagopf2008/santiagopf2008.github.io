@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Santiago — Mechanical Engineering Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F7F9F8;
+    --grid:#DCE7EC;
+    --ink:#14202B;
+    --steel:#7E8C96;
+    --accent:#E8642C;
+    --accent-soft:#FBE9DF;
+    --line:#C3D2DA;
+    --card:#FFFFFF;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto}
+    *,*::before,*::after{animation:none!important;transition:none!important}
+  }
+  body{
+    font-family:'IBM Plex Sans',sans-serif;
+    background:var(--paper);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size:32px 32px;
+    color:var(--ink);
+    line-height:1.6;
+  }
+  .sheet{max-width:1080px;margin:0 auto;border-left:1px solid var(--line);border-right:1px solid var(--line);background:rgba(247,249,248,.6)}
+  .mono{font-family:'IBM Plex Mono',monospace}
+
+  /* ===== TITLE BLOCK (signature element) ===== */
+  .titleblock{
+    display:grid;
+    grid-template-columns:1fr auto auto auto;
+    border-bottom:2px solid var(--ink);
+    background:var(--card);
+    position:sticky;top:0;z-index:50;
+  }
+  .tb-cell{padding:10px 16px;border-right:1px solid var(--line);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.06em}
+  .tb-cell:last-child{border-right:none}
+  .tb-label{display:block;color:var(--steel);font-size:9px;text-transform:uppercase;letter-spacing:.14em}
+  .tb-value{font-weight:500}
+  .tb-value.accent{color:var(--accent)}
+  @media(max-width:680px){
+    .titleblock{grid-template-columns:1fr 1fr}
+    .tb-cell:nth-child(2){border-right:none}
+  }
+
+  /* ===== HERO ===== */
+  .hero{padding:96px 48px 72px;position:relative}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:20px}
+  h1{
+    font-family:'Chakra Petch',sans-serif;font-weight:700;
+    font-size:clamp(44px,8vw,84px);line-height:1.02;letter-spacing:-.01em;
+    text-transform:uppercase;
+  }
+  h1 .thin{color:var(--steel);font-weight:500}
+  /* dimension line under the name */
+  .dim{display:flex;align-items:center;gap:8px;margin:22px 0 30px;max-width:560px}
+  .dim .arrow{width:10px;height:10px;border-left:1.5px solid var(--accent);border-bottom:1.5px solid var(--accent)}
+  .dim .arrow.l{transform:rotate(45deg)}
+  .dim .arrow.r{transform:rotate(-135deg)}
+  .dim .rule{flex:1;border-top:1.5px dashed var(--accent)}
+  .dim .tag{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:.08em;white-space:nowrap}
+  .hero p.lede{font-size:18px;max-width:560px;color:#37474F}
+  .chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+  .chip{font-family:'IBM Plex Mono',monospace;font-size:11.5px;padding:7px 14px;border:1px solid var(--ink);background:var(--card);letter-spacing:.04em}
+  .chip.hot{background:var(--ink);color:var(--paper)}
+  @media(max-width:680px){.hero{padding:64px 22px 48px}}
+
+  /* ===== SECTIONS ===== */
+  section{padding:0 48px 72px}
+  @media(max-width:680px){section{padding:0 22px 56px}}
+  .sec-head{display:flex;align-items:baseline;gap:16px;border-top:2px solid var(--ink);padding-top:14px;margin-bottom:34px}
+  .sec-zone{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent);letter-spacing:.12em}
+  .sec-head h2{font-family:'Chakra Petch',sans-serif;font-size:clamp(22px,3vw,30px);text-transform:uppercase;letter-spacing:.02em;font-weight:600}
+  .sec-head .count{margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--steel)}
+
+  /* about */
+  .about-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:40px}
+  @media(max-width:760px){.about-grid{grid-template-columns:1fr}}
+  .about-grid p{margin-bottom:14px;color:#37474F}
+  .spec-table{border:1px solid var(--ink);background:var(--card)}
+  .spec-row{display:flex;justify-content:space-between;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);font-size:13.5px}
+  .spec-row:last-child{border-bottom:none}
+  .spec-row .k{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--steel);text-transform:uppercase;letter-spacing:.08em;padding-top:2px}
+  .spec-row .v{text-align:right;font-weight:500}
+
+  /* projects */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:22px}
+  .card{
+    background:var(--card);border:1px solid var(--ink);position:relative;
+    padding:22px 22px 18px;display:flex;flex-direction:column;gap:10px;
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .card:hover{transform:translateY(-3px);box-shadow:5px 5px 0 var(--accent-soft), 6px 6px 0 var(--accent)}
+  .card .corner{position:absolute;width:8px;height:8px;border-color:var(--accent);border-style:solid}
+  .corner.tl{top:-1px;left:-1px;border-width:2px 0 0 2px}
+  .corner.br{bottom:-1px;right:-1px;border-width:0 2px 2px 0}
+  .card .pid{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--steel);letter-spacing:.1em}
+  .card h3{font-family:'Chakra Petch',sans-serif;font-size:18px;font-weight:600;line-height:1.25}
+  .card p{font-size:14px;color:#46555F;flex:1}
+  .badge{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border:1px solid currentColor;width:max-content}
+  .badge.done{color:#1B7A4A}
+  .badge.wip{color:var(--accent)}
+  .badge.plan{color:var(--steel)}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+  .tags span{font-family:'IBM Plex Mono',monospace;font-size:10.5px;background:var(--paper);border:1px solid var(--line);padding:2px 8px;color:#46555F}
+  .card.slot{border-style:dashed;border-color:var(--steel);background:transparent;align-items:center;justify-content:center;text-align:center;min-height:200px}
+  .card.slot:hover{transform:none;box-shadow:none}
+  .card.slot .plus{font-family:'Chakra Petch',sans-serif;font-size:34px;color:var(--steel)}
+  .card.slot p{flex:0;color:var(--steel);font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.06em}
+
+  /* timeline (experience + education) */
+  .tl{border-left:2px solid var(--ink);margin-left:6px}
+  .tl-item{position:relative;padding:0 0 34px 30px}
+  .tl-item:last-child{padding-bottom:6px}
+  .tl-item::before{
+    content:"";position:absolute;left:-7px;top:6px;width:12px;height:12px;
+    background:var(--paper);border:2px solid var(--ink);transform:rotate(45deg);
+  }
+  .tl-item.current::before{background:var(--accent);border-color:var(--accent)}
+  .tl-date{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:.08em}
+  .tl-item h3{font-family:'Chakra Petch',sans-serif;font-size:17px;font-weight:600;margin:4px 0 2px}
+  .tl-item .org{font-size:13.5px;color:var(--steel);font-weight:500;margin-bottom:6px}
+  .tl-item p{font-size:14px;color:#46555F;max-width:640px}
+
+  /* skills */
+  .skill-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:26px}
+  .skill-group h3{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--steel);margin-bottom:14px;border-bottom:1px solid var(--line);padding-bottom:8px}
+  .skill{margin-bottom:13px}
+  .skill .row{display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:5px}
+  .skill .lvl{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--steel);text-transform:uppercase;letter-spacing:.08em}
+  .bar{height:5px;background:var(--card);border:1px solid var(--line);position:relative}
+  .bar i{position:absolute;inset:0;background:var(--ink);transform-origin:left}
+  .bar.wip i{background:var(--accent)}
+
+  /* revision table */
+  .rev{border:1px solid var(--ink);background:var(--card);font-size:13px}
+  .rev-row{display:grid;grid-template-columns:64px 130px 1fr;border-bottom:1px solid var(--line)}
+  .rev-row:last-child{border-bottom:none}
+  .rev-row.head{font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--steel);background:var(--paper)}
+  .rev-row > div{padding:9px 14px;border-right:1px solid var(--line)}
+  .rev-row > div:last-child{border-right:none}
+  .rev-row .r{font-family:'IBM Plex Mono',monospace;color:var(--accent)}
+  @media(max-width:560px){.rev-row{grid-template-columns:50px 92px 1fr}.rev-row>div{padding:8px 9px;font-size:12px}}
+
+  /* contact / footer */
+  footer{border-top:2px solid var(--ink);background:var(--ink);color:var(--paper);padding:54px 48px}
+  @media(max-width:680px){footer{padding:44px 22px}}
+  footer h2{font-family:'Chakra Petch',sans-serif;text-transform:uppercase;font-size:clamp(24px,4vw,36px);margin-bottom:8px}
+  footer p{color:#9FB0BB;max-width:480px;margin-bottom:26px}
+  .links{display:flex;flex-wrap:wrap;gap:12px}
+  .links a{
+    font-family:'IBM Plex Mono',monospace;font-size:12.5px;letter-spacing:.05em;
+    color:var(--paper);text-decoration:none;border:1px solid #46555F;padding:10px 18px;
+    transition:border-color .15s, color .15s;
+  }
+  .links a:hover,.links a:focus-visible{border-color:var(--accent);color:var(--accent)}
+  a:focus-visible,.card:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+  .foot-tb{margin-top:44px;border-top:1px solid #2E3E4A;padding-top:16px;display:flex;flex-wrap:wrap;gap:24px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:#6E7F8B;letter-spacing:.1em;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <!-- ===== STICKY TITLE BLOCK ===== -->
+  <div class="titleblock">
+    <div class="tb-cell"><span class="tb-label">Drawing</span><span class="tb-value" id="tb-name"></span></div>
+    <div class="tb-cell"><span class="tb-label">Rev</span><span class="tb-value accent" id="tb-rev"></span></div>
+    <div class="tb-cell"><span class="tb-label">Status</span><span class="tb-value" id="tb-status"></span></div>
+    <div class="tb-cell"><span class="tb-label">Scale</span><span class="tb-value">AMBITION 1:1</span></div>
+  </div>
+
+  <!-- ===== HERO ===== -->
+  <header class="hero">
+    <div class="eyebrow" id="hero-eyebrow"></div>
+    <h1 id="hero-name"></h1>
+    <div class="dim" aria-hidden="true">
+      <span class="arrow l"></span><span class="rule"></span>
+      <span class="tag" id="hero-dim"></span>
+      <span class="rule"></span><span class="arrow r"></span>
+    </div>
+    <p class="lede" id="hero-lede"></p>
+    <div class="chips" id="hero-chips"></div>
+  </header>
+
+  <!-- ===== ABOUT ===== -->
+  <section id="about">
+    <div class="sec-head"><span class="sec-zone">SEC A</span><h2>Profile</h2></div>
+    <div class="about-grid">
+      <div id="about-text"></div>
+      <div class="spec-table" id="spec-table"></div>
+    </div>
+  </section>
+
+  <!-- ===== PROJECTS ===== -->
+  <section id="projects">
+    <div class="sec-head"><span class="sec-zone">SEC B</span><h2>Projects</h2><span class="count" id="proj-count"></span></div>
+    <div class="grid" id="proj-grid"></div>
+  </section>
+
+  <!-- ===== EXPERIENCE ===== -->
+  <section id="experience">
+    <div class="sec-head"><span class="sec-zone">SEC C</span><h2>Experience &amp; Work</h2></div>
+    <div class="tl" id="exp-tl"></div>
+  </section>
+
+  <!-- ===== EDUCATION ===== -->
+  <section id="education">
+    <div class="sec-head"><span class="sec-zone">SEC D</span><h2>Education &amp; Certifications</h2></div>
+    <div class="tl" id="edu-tl"></div>
+  </section>
+
+  <!-- ===== SKILLS ===== -->
+  <section id="skills">
+    <div class="sec-head"><span class="sec-zone">SEC E</span><h2>Skills</h2></div>
+    <div class="skill-cols" id="skill-cols"></div>
+  </section>
+
+  <!-- ===== REVISION HISTORY ===== -->
+  <section id="revisions">
+    <div class="sec-head"><span class="sec-zone">SEC F</span><h2>Revision History</h2></div>
+    <div class="rev" id="rev-table"></div>
+  </section>
+
+  <!-- ===== CONTACT ===== -->
+  <footer id="contact">
+    <h2 id="contact-head"></h2>
+    <p id="contact-sub"></p>
+    <div class="links" id="contact-links"></div>
+    <div class="foot-tb">
+      <span id="foot-loc"></span>
+      <span>SHEET 1 OF 1</span>
+      <span id="foot-year"></span>
+    </div>
+  </footer>
+</div>
+
+<script>
+/* ============================================================
+   ✏️  EDIT EVERYTHING BELOW — this object is the whole site.
+   Add a project? Add an item to DATA.projects.
+   New internship? Add it to DATA.experience.
+   Updated something? Add a row to DATA.revisions and bump rev.
+   Nothing outside this object needs touching.
+   ============================================================ */
+const DATA = {
+  name: "Santiago",
+  rev: "A.1",
+  status: "PRE-ENROLLED → FALL 2026",
+  eyebrow: "Mechanical Engineering · UMass Lowell · Class of 2030",
+  heroDim: "LIMA, PE → LOWELL, MA ≈ 5,900 KM",
+  lede: "I build, automate, and analyze. Heading into mechanical engineering with sights on robotics and aerospace — currently turning a background in automation and IB-level math & physics into hardware skills.",
+  chips: ["🤖 Robotics", "🚀 Aerospace", "🛠️ CAD (in training)", "🐍 Python (learning)", "🇪🇸/🇬🇧 Bilingual"],
+
+  about: [
+    "I'm an incoming Mechanical Engineering freshman at the University of Massachusetts Lowell, graduating from the IB Diploma Programme with Higher Level coursework in Mathematics (Analysis & Approaches), Physics, and Economics.",
+    "Before writing a single line of G-code, I taught myself to automate: multi-macro Excel/VBA dashboard systems, Power BI retail analytics, and data-driven business analysis. That same instinct — make the machine do the boring part — is what pulls me toward robotics and automation engineering.",
+    "Long-term: graduate study in mechanical or aerospace engineering, and hardware that ends up somewhere interesting — a warehouse, a launchpad, or both."
+  ],
+  specs: [
+    ["Base", "Lowell, MA (from Lima, PE)"],
+    ["Degree", "B.S. Mechanical Engineering"],
+    ["Expected", "2030"],
+    ["Focus", "Robotics · Automation · Aero"],
+    ["Languages", "Spanish (native) · English (fluent)"],
+    ["Seeking", "Summer 2027/28 internships"]
+  ],
+
+  projects: [
+    {
+      id: "PRJ-001",
+      title: "Multi-Macro Excel Dashboard Automation",
+      status: "done", // done | wip | plan
+      desc: "Designed a chained VBA workflow (UpdateDashboard → UpdateSummaryTab → FormatDashboard) pulling live data from a validation workbook — turning a manual reporting process into a one-click pipeline.",
+      tags: ["VBA", "Excel", "Automation"]
+    },
+    {
+      id: "PRJ-002",
+      title: "Retail Sellout Analytics — Power BI",
+      status: "done",
+      desc: "Built trade-marketing sellout analysis across three major Peruvian retail chains, tracking SKU-level performance to support distribution and activation decisions.",
+      tags: ["Power BI", "Data Analysis", "Retail"]
+    },
+    {
+      id: "PRJ-003",
+      title: "Continuous Influence Functions in Chess",
+      status: "done",
+      desc: "IB Math AA HL Internal Assessment modeling piece influence across the board using Gaussian decay functions and calculus — math as a design tool.",
+      tags: ["Calculus", "Modeling", "IB HL"]
+    },
+    {
+      id: "PRJ-004",
+      title: "SolidWorks CSWA Certification",
+      status: "wip",
+      desc: "Self-teaching SolidWorks through summer 2026; targeting the Certified SolidWorks Associate exam by December 2026, then CSWP in spring.",
+      tags: ["SolidWorks", "CAD", "Certification"]
+    },
+    {
+      id: "PRJ-005",
+      title: "Passion Project — Mechatronic Build",
+      status: "plan",
+      desc: "Freshman-year design-build-test project combining CAD, 3D printing, and Python/Arduino control. Scope being defined — full documentation will live here.",
+      tags: ["CAD", "Arduino", "Python", "3D Printing"]
+    }
+  ],
+  showAddSlot: true, // dashed "next project" placeholder card
+
+  experience: [
+    {
+      current: true,
+      date: "2026 — PRESENT",
+      title: "Pre-Engineering Skill Building",
+      org: "Independent",
+      desc: "Structured summer curriculum: SolidWorks fundamentals, Python (NumPy/Pandas), and Calculus II preparation ahead of freshman year."
+    },
+    {
+      current: false,
+      date: "2025 — 2026",
+      title: "Digital Marketing & BI Projects",
+      org: "Lima, Peru",
+      desc: "Google Ads campaign proposal for a Peruvian ergonomic-workspace startup; quantitative influencer-marketing research (Likert-scale survey design, Lima fashion market)."
+    }
+    /* Add internships here as they happen:
+    { current:false, date:"SUMMER 2027", title:"Mechanical Engineering Intern", org:"Company", desc:"What you did." }
+    */
+  ],
+
+  education: [
+    {
+      current: true,
+      date: "2026 — 2030 (EXPECTED)",
+      title: "B.S. Mechanical Engineering",
+      org: "University of Massachusetts Lowell",
+      desc: "Francis College of Engineering. Planned: project team membership (rocketry / robotics) from semester one, co-op program."
+    },
+    {
+      current: false,
+      date: "2024 — 2026",
+      title: "IB Diploma Programme",
+      org: "Lima, Peru",
+      desc: "Higher Level: Mathematics AA, Physics, Economics. Standard Level: Chemistry, English A, Spanish A."
+    },
+    {
+      current: false,
+      date: "TARGET: DEC 2026",
+      title: "CSWA — Certified SolidWorks Associate",
+      org: "Dassault Systèmes",
+      desc: "In preparation. CSWP to follow in spring 2027."
+    }
+  ],
+
+  skills: [
+    {
+      group: "Engineering & CAD",
+      items: [
+        ["SolidWorks", "Learning", 30, true],
+        ["Engineering Drawing", "Learning", 25, true],
+        ["MATLAB", "Planned 2026", 10, true]
+      ]
+    },
+    {
+      group: "Programming & Data",
+      items: [
+        ["Excel / VBA", "Advanced", 88, false],
+        ["Power BI", "Intermediate", 65, false],
+        ["Python", "Learning", 35, true]
+      ]
+    },
+    {
+      group: "Foundations",
+      items: [
+        ["Calculus & ODEs", "IB HL", 80, false],
+        ["Physics (Mechanics)", "IB HL", 78, false],
+        ["Economics / Analysis", "IB HL", 75, false]
+      ]
+    }
+  ],
+
+  revisions: [
+    ["A.1", "2026-06-09", "Initial release — profile, project log, and roadmap targets published."]
+    /* Add a new row each time you update the site:
+    ["A.2", "2026-09-15", "Joined UML Rocketry; added career fair contacts."]
+    */
+  ],
+
+  contact: {
+    head: "Open to build.",
+    sub: "Recruiting for Summer 2027/28 mechanical engineering internships and co-ops in the Greater Boston area. Robotics, automation, aerospace — let's talk.",
+    links: [
+      ["EMAIL →", "mailto:your.email@example.com"],
+      ["LINKEDIN →", "https://linkedin.com/in/your-handle"],
+      ["GITHUB →", "https://github.com/your-handle"],
+      ["RESUME (PDF) →", "#"]
+    ]
+  }
+};
+
+/* ============================================================
+   RENDERING — no need to edit below this line
+   ============================================================ */
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+// title block + hero
+$("tb-name").textContent = DATA.name.toUpperCase() + " — PORTFOLIO";
+$("tb-rev").textContent = "REV " + DATA.rev;
+$("tb-status").textContent = DATA.status;
+$("hero-eyebrow").textContent = DATA.eyebrow;
+$("hero-name").innerHTML = esc(DATA.name) + ' <span class="thin">/ ME</span>';
+$("hero-dim").textContent = DATA.heroDim;
+$("hero-lede").textContent = DATA.lede;
+$("hero-chips").innerHTML = DATA.chips.map((c,i) =>
+  `<span class="chip${i===0?' hot':''}">${esc(c)}</span>`).join("");
+
+// about
+$("about-text").innerHTML = DATA.about.map(p => `<p>${esc(p)}</p>`).join("");
+$("spec-table").innerHTML = DATA.specs.map(([k,v]) =>
+  `<div class="spec-row"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join("");
+
+// projects
+const badge = s => s==="done" ? '<span class="badge done">Completed</span>'
+              : s==="wip" ? '<span class="badge wip">In Progress</span>'
+              : '<span class="badge plan">Planned</span>';
+$("proj-count").textContent = String(DATA.projects.length).padStart(2,"0") + " LOGGED";
+$("proj-grid").innerHTML = DATA.projects.map(p => `
+  <article class="card" tabindex="0">
+    <span class="corner tl"></span><span class="corner br"></span>
+    <span class="pid">${esc(p.id)}</span>
+    <h3>${esc(p.title)}</h3>
+    ${badge(p.status)}
+    <p>${esc(p.desc)}</p>
+    <div class="tags">${p.tags.map(t=>`<span>${esc(t)}</span>`).join("")}</div>
+  </article>`).join("")
+  + (DATA.showAddSlot ? `
+  <article class="card slot" aria-hidden="true">
+    <span class="plus">+</span>
+    <p>NEXT PROJECT<br>RESERVED</p>
+  </article>` : "");
+
+// timelines
+const tlHTML = arr => arr.map(e => `
+  <div class="tl-item${e.current?' current':''}">
+    <span class="tl-date">${esc(e.date)}</span>
+    <h3>${esc(e.title)}</h3>
+    <div class="org">${esc(e.org)}</div>
+    <p>${esc(e.desc)}</p>
+  </div>`).join("");
+$("exp-tl").innerHTML = tlHTML(DATA.experience);
+$("edu-tl").innerHTML = tlHTML(DATA.education);
+
+// skills
+$("skill-cols").innerHTML = DATA.skills.map(g => `
+  <div class="skill-group">
+    <h3>${esc(g.group)}</h3>
+    ${g.items.map(([name,lvl,pct,wip]) => `
+      <div class="skill">
+        <div class="row"><span>${esc(name)}</span><span class="lvl">${esc(lvl)}</span></div>
+        <div class="bar${wip?' wip':''}"><i style="transform:scaleX(${pct/100})"></i></div>
+      </div>`).join("")}
+  </div>`).join("");
+
+// revisions
+$("rev-table").innerHTML =
+  `<div class="rev-row head"><div>Rev</div><div>Date</div><div>Description</div></div>` +
+  [...DATA.revisions].reverse().map(([r,d,t]) =>
+    `<div class="rev-row"><div class="r">${esc(r)}</div><div class="mono">${esc(d)}</div><div>${esc(t)}</div></div>`).join("");
+
+// contact
+$("contact-head").textContent = DATA.contact.head;
+$("contact-sub").textContent = DATA.contact.sub;
+$("contact-links").innerHTML = DATA.contact.links.map(([label,href]) =>
+  `<a href="${esc(href)}">${esc(label)}</a>`).join("");
+$("foot-loc").textContent = "ORIGIN: LIMA, PE";
+$("foot-year").textContent = "© " + new Date().getFullYear() + " " + DATA.name.toUpperCase();
+</script>
+</body>
+</html>
